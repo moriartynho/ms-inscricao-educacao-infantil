@@ -6,21 +6,23 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @Document
+@AllArgsConstructor
 public class School {
-	
+
 	@Id
-	private Long id;
-	
+	private String id;
+
 	@NotBlank
 	private String schoolName;
 
 	@NotBlank
 	private String schoolAndress;
-	
+
 	@NotBlank
 	private List<SchoolClass> schoolClasses;
 }

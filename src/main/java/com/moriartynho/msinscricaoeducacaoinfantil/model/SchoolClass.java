@@ -6,18 +6,20 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @Document
+@AllArgsConstructor
 public class SchoolClass {
-	
+
 	@Id
-	private Long id;
-	
+	private String id;
+
 	@NotNull
 	private Integer maximumNumberOfVacanciesInTheClass;
-	
+
 	private List<Student> classStudents;
 
 }
