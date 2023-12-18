@@ -1,22 +1,13 @@
 package com.moriartynho.msinscricaoeducacaoinfantil;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MsInscricaoEducacaoInfantilApplication implements CommandLineRunner {
+public class MsInscricaoEducacaoInfantilApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MsInscricaoEducacaoInfantilApplication.class, args);
 	}
-
-	@Override
-	public void run(String... args) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
 
 }

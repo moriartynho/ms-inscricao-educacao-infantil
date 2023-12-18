@@ -69,7 +69,7 @@ public class StudentRegisterService {
 	    }
 
 	    return gradeRepository.findByGradeName(GradeConstants.ENSINO_FUNDAMENTAL_GRADE_NAME)
-	                          .orElseThrow(() -> new RegisterValidationException("Grade não definida"));
+	                          .orElseThrow(() -> new RegisterValidationException("Série não definida"));
 	}
 
 }

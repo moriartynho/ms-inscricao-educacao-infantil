@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.moriartynho.msinscricaoeducacaoinfantil.exception.InternalErrorException;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.Grade;
 import com.moriartynho.msinscricaoeducacaoinfantil.service.GradeService;
 
@@ -21,7 +22,7 @@ public class GradeController {
 	private GradeService gradeService;
 	
 	@GetMapping
-	public ResponseEntity<List<Grade>> findAllGrades(){
+	public ResponseEntity<List<Grade>> findAllGrades() throws InternalErrorException{
 		return ResponseEntity.ok(gradeService.findAllGrades());
 	}
 
