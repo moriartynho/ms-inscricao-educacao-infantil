@@ -15,9 +15,9 @@ public class ValidateStudentAlreadyRegistred implements StudentRegisterValidatio
 
 	@Override
 	public void validate(StudentRegisterDTO studentRegisterDTO) throws RegisterValidationException {
-			if (studentRepository.existsByStudentsCpf(studentRegisterDTO.studentsCpf())) {
-				throw new RegisterValidationException("CPF já cadastrado na base de dados");
-			}
+		if (studentRepository.existsByStudentsCpf(studentRegisterDTO.studentsCpf())) {
+			throw new RegisterValidationException("CPF já cadastrado na base de dados");
+		}
 
 	}
 

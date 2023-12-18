@@ -7,7 +7,7 @@ import com.moriartynho.msinscricaoeducacaoinfantil.exception.RegisterValidationE
 
 @Component
 public interface StudentRegisterValidation {
-	
+
 	void validate(StudentRegisterDTO studentRegisterDTO) throws RegisterValidationException;
 
 }

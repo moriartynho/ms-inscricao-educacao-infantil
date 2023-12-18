@@ -24,9 +24,9 @@ public class School {
 
 	@NotBlank
 	private String schoolAndress;
-	
-	@NotNull
-	private Integer physicalRooms;
 
-	private List<SchoolClass> schoolClasses =  new ArrayList<>();
+	@NotNull
+	private Integer physicalRoomsAvailable;
+
+	private List<SchoolClass> schoolClasses = new ArrayList<>();
 }

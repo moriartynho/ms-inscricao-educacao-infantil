@@ -20,19 +20,19 @@ import com.moriartynho.msinscricaoeducacaoinfantil.service.GradeService;
 @RequestMapping("/grades")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class GradeController {
-	
+
 	@Autowired
 	private GradeService gradeService;
-	
+
 	@GetMapping
-	public ResponseEntity<List<Grade>> findAllGrades() throws InternalErrorException{
+	public ResponseEntity<List<Grade>> findAllGrades() throws InternalErrorException {
 		return ResponseEntity.ok(gradeService.findAllGrades());
 	}
-	
+
 	@PutMapping()
-	public ResponseEntity<Grade> editGradeById(@RequestBody EditGradeDTO editGradeDTO) throws InternalErrorException{
+	public ResponseEntity<Grade> editGradeById(@RequestBody EditGradeDTO editGradeDTO) throws InternalErrorException {
 		gradeService.editGradeById(editGradeDTO);
 		return ResponseEntity.ok().build();
 	}
- 
+
 }

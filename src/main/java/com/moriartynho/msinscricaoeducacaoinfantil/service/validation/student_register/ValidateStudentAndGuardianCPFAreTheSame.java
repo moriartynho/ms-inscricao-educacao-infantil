@@ -10,9 +10,9 @@ public class ValidateStudentAndGuardianCPFAreTheSame implements StudentRegisterV
 
 	@Override
 	public void validate(StudentRegisterDTO studentRegisterDTO) throws RegisterValidationException {
-		if(studentRegisterDTO.studentsCpf().equals(studentRegisterDTO.studentsGuardianCPF())){
+		if (studentRegisterDTO.studentsCpf().equals(studentRegisterDTO.studentsGuardianCPF())) {
 			throw new RegisterValidationException("CPF do estudante e CPF do responsável não pode ser o mesmo");
-		}		
+		}
 	}
 
 }

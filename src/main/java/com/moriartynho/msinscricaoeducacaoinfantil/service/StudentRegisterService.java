@@ -31,45 +31,43 @@ public class StudentRegisterService {
 
 	public void register(StudentRegisterDTO studentRegisterDTO) throws RegisterValidationException {
 
-		try {
-			this.registerValidations.forEach(v -> {
-				try {
-					v.validate(studentRegisterDTO);
-				} catch (Exception e) {
-					throw new ValidationException("Ocorreu um erro ao validar o estudante: " + e.getMessage());
-				}
-			});
+		this.registerValidations.forEach(v -> {
+			try {
+				v.validate(studentRegisterDTO);
+				Grade studentGrade = setStudentGrade(studentRegisterDTO.studentsBirthDate());
+				Student newStudent = new Student(null, studentRegisterDTO.studentsFullName(),
+						studentRegisterDTO.studentsBirthDate(), studentRegisterDTO.studentsCpf(),
+						studentRegisterDTO.studentsGender(), studentRegisterDTO.studentsGuardianName(),
+						studentRegisterDTO.studentsGuardianCPF(), studentRegisterDTO.studentsAndress(),
+						studentRegisterDTO.participatesAuxilioBrasil(), studentGrade);
 
-			Grade studentGrade = setStudentGrade(studentRegisterDTO.studentsBirthDate());
-			Student newStudent = new Student(null, studentRegisterDTO.studentsFullName(),
-					studentRegisterDTO.studentsBirthDate(), studentRegisterDTO.studentsCpf(),
-					studentRegisterDTO.studentsGender(), studentRegisterDTO.studentsGuardianName(),
-					studentRegisterDTO.studentsGuardianCPF(), studentRegisterDTO.studentsAndress(),
-					studentRegisterDTO.participatesAuxilioBrasil(), studentGrade);
+				studentRepository.save(newStudent);
+			} catch (Exception e) {
+				throw new ValidationException("Ocorreu um erro ao validar e salvar o estudante: " + e.getMessage());
+			}
+		});
 
-			studentRepository.save(newStudent);
-		} catch (Exception e) {
-			throw new RegisterValidationException(e.getMessage());
-		}
 	}
 
 	private Grade setStudentGrade(LocalDate studentsBirthDate) throws RegisterValidationException {
-	    List<Grade> allGrades = gradeRepository.findAll();
+		List<Grade> allGrades = gradeRepository.findAll();
 
-	    for (Grade grade : allGrades) {
-	        LocalDate minDate = grade.getGradeMinimumDate();
-	        LocalDate maxDate = grade.getGradeMaximumDate();
+		for (Grade grade : allGrades) {
+			LocalDate minDate = grade.getGradeMinimumDate();
+			LocalDate maxDate = grade.getGradeMaximumDate();
 
-	        boolean isYearInRange = studentsBirthDate.getYear() >= maxDate.getYear() && studentsBirthDate.getYear() <= minDate.getYear();
-	        boolean isMonthInRange = studentsBirthDate.getMonthValue() >= minDate.getMonthValue() && studentsBirthDate.getMonthValue() <= maxDate.getMonthValue();
+			boolean isYearInRange = studentsBirthDate.getYear() >= maxDate.getYear()
+					&& studentsBirthDate.getYear() <= minDate.getYear();
+			boolean isMonthInRange = studentsBirthDate.getMonthValue() >= minDate.getMonthValue()
+					&& studentsBirthDate.getMonthValue() <= maxDate.getMonthValue();
 
-	        if (isYearInRange && isMonthInRange) {
-	            return grade;
-	        }
-	    }
+			if (isYearInRange && isMonthInRange) {
+				return grade;
+			}
+		}
 
-	    return gradeRepository.findByGradeName(GradeConstants.ENSINO_FUNDAMENTAL_GRADE_NAME)
-	                          .orElseThrow(() -> new RegisterValidationException("Série não definida"));
+		return gradeRepository.findByGradeName(GradeConstants.ENSINO_FUNDAMENTAL_GRADE_NAME)
+				.orElseThrow(() -> new RegisterValidationException("Série não definida"));
 	}
 
 }

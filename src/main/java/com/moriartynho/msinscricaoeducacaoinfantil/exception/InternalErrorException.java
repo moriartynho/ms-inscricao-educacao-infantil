@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
 public class InternalErrorException extends Exception {
 	private static final long serialVersionUID = 1L;
-	
+
 	public InternalErrorException(String msg) {
 		super(msg);
 	}
@@ -14,5 +14,5 @@ public class InternalErrorException extends Exception {
 	public InternalErrorException(String msg, Throwable e) {
 		super(msg, e);
 	}
-	
+
 }

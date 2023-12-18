@@ -10,9 +10,9 @@ public class ValidateStudentAndGuardianNameAreTheSame implements StudentRegister
 
 	@Override
 	public void validate(StudentRegisterDTO studentRegisterDTO) throws RegisterValidationException {
-		if(studentRegisterDTO.studentsFullName().equals(studentRegisterDTO.studentsGuardianName())){
+		if (studentRegisterDTO.studentsFullName().equals(studentRegisterDTO.studentsGuardianName())) {
 			throw new RegisterValidationException("nome do estudante e nome do responsável não pode ser o mesmo");
-		}		
+		}
 	}
 
 }

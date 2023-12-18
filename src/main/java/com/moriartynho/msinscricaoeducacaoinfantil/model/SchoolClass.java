@@ -21,5 +21,7 @@ public class SchoolClass {
 	private Integer maximumVacanciesInTheClass;
 
 	private List<Student> classStudents;
+	
+	private List<Grade> classGrade;
 
 }

@@ -21,21 +21,22 @@ import com.moriartynho.msinscricaoeducacaoinfantil.service.StudentRegisterServic
 @RequestMapping("/students")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class StudentController {
-	
+
 	@Autowired
 	private StudentRegisterService registerService;
-	
+
 	@Autowired
 	private StudentRepository studentRepository;
-	
+
 	@PostMapping
-	public ResponseEntity<Student> StudentRegister(@RequestBody StudentRegisterDTO studentRegisterDTO) throws RegisterValidationException {
+	public ResponseEntity<Student> StudentRegister(@RequestBody StudentRegisterDTO studentRegisterDTO)
+			throws RegisterValidationException {
 		registerService.register(studentRegisterDTO);
 		return ResponseEntity.ok().build();
 	}
-	
+
 	@GetMapping
-	public List<Student> findAllStudents(){
+	public List<Student> findAllStudents() {
 		return studentRepository.findAll();
 	}
 
