@@ -1,10 +1,13 @@
 package com.moriartynho.msinscricaoeducacaoinfantil.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.moriartynho.msinscricaoeducacaoinfantil.dto.EditGradeDTO;
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.InternalErrorException;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.Grade;
 import com.moriartynho.msinscricaoeducacaoinfantil.repository.GradeRepository;
@@ -20,6 +23,15 @@ public class GradeService {
 			return this.gradeRepository.findAll();
 		} catch (Exception e) {
 			throw new InternalErrorException("Ocorreu um erro ao tentar acessar a base de dados: " + e.getMessage());
+		}
+	}
+
+	public void editGradeById(EditGradeDTO editGradeDTO) throws InternalErrorException {
+		try {
+			Optional<Grade> gradeToEdit = gradeRepository.findById(editGradeDTO.id());
+			gradeRepository.save(gradeToEdit.get());
+		} catch (DataAccessException e) {
+			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
 		}
 	}
 

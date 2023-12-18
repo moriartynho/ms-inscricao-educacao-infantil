@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.moriartynho.msinscricaoeducacaoinfantil.dto.EditGradeDTO;
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.InternalErrorException;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.Grade;
 import com.moriartynho.msinscricaoeducacaoinfantil.service.GradeService;
@@ -25,5 +28,11 @@ public class GradeController {
 	public ResponseEntity<List<Grade>> findAllGrades() throws InternalErrorException{
 		return ResponseEntity.ok(gradeService.findAllGrades());
 	}
-
+	
+	@PutMapping()
+	public ResponseEntity<Grade> editGradeById(@RequestBody EditGradeDTO editGradeDTO) throws InternalErrorException{
+		gradeService.editGradeById(editGradeDTO);
+		return ResponseEntity.ok().build();
+	}
+ 
 }

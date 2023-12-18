@@ -10,5 +10,9 @@ public class InternalErrorException extends Exception {
 	public InternalErrorException(String msg) {
 		super(msg);
 	}
+
+	public InternalErrorException(String msg, Throwable e) {
+		super(msg, e);
+	}
 	
 }

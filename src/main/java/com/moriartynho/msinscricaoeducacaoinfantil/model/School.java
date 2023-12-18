@@ -1,11 +1,13 @@
 package com.moriartynho.msinscricaoeducacaoinfantil.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -22,7 +24,9 @@ public class School {
 
 	@NotBlank
 	private String schoolAndress;
+	
+	@NotNull
+	private Integer physicalRooms;
 
-	@NotBlank
-	private List<SchoolClass> schoolClasses;
+	private List<SchoolClass> schoolClasses =  new ArrayList<>();
 }

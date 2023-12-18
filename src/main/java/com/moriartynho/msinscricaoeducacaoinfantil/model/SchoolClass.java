@@ -18,7 +18,7 @@ public class SchoolClass {
 	private String id;
 
 	@NotNull
-	private Integer maximumNumberOfVacanciesInTheClass;
+	private Integer maximumVacanciesInTheClass;
 
 	private List<Student> classStudents;
 

@@ -6,4 +6,6 @@ import com.moriartynho.msinscricaoeducacaoinfantil.model.School;
 
 public interface SchoolRepository extends MongoRepository<School, String> {
 
+	boolean existsBySchoolName(String schoolName);
+
 }
