@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.moriartynho.msinscricaoeducacaoinfantil.dto.EditGradeDTO;
 import com.moriartynho.msinscricaoeducacaoinfantil.dto.InsertGradeDTO;
+import com.moriartynho.msinscricaoeducacaoinfantil.exception.EditValidationException;
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.InternalErrorException;
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.RegisterValidationException;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.Grade;
@@ -38,8 +39,8 @@ public class GradeController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PutMapping()
-	public ResponseEntity<Grade> editGradeById(@RequestBody EditGradeDTO editGradeDTO) throws InternalErrorException {
+	@PutMapping("/edit-grade")
+	public ResponseEntity<Grade> editGradeById(@RequestBody EditGradeDTO editGradeDTO) throws InternalErrorException, EditValidationException {
 		gradeService.editGradeById(editGradeDTO);
 		return ResponseEntity.ok().build();
 	}

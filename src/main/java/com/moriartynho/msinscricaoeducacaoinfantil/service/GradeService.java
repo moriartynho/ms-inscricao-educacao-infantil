@@ -1,14 +1,15 @@
 package com.moriartynho.msinscricaoeducacaoinfantil.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.moriartynho.msinscricaoeducacaoinfantil.builder.GradeEditBuilder;
 import com.moriartynho.msinscricaoeducacaoinfantil.dto.EditGradeDTO;
 import com.moriartynho.msinscricaoeducacaoinfantil.dto.InsertGradeDTO;
+import com.moriartynho.msinscricaoeducacaoinfantil.exception.EditValidationException;
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.InternalErrorException;
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.RegisterValidationException;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.Grade;
@@ -34,15 +35,6 @@ public class GradeService {
 		}
 	}
 
-	public Grade editGradeById(EditGradeDTO editGradeDTO) throws InternalErrorException {
-		try {
-			Optional<Grade> gradeToEdit = gradeRepository.findById(editGradeDTO.id());
-			return gradeRepository.save(gradeToEdit.get());
-		} catch (DataAccessException e) {
-			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
-		}
-	}
-
 	public void insertGrade(InsertGradeDTO insertGradeDTO) throws RegisterValidationException, InternalErrorException {
 		try {
 			validateDateGrade(insertGradeDTO);
@@ -50,6 +42,16 @@ public class GradeService {
 					insertGradeDTO.gradeMaximumDate());
 			this.gradeRepository.save(newGrade);
 		} catch (RegisterValidationException e) {
+			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
+		}
+	}
+
+	public Grade editGradeById(EditGradeDTO editGradeDTO) throws InternalErrorException, EditValidationException {
+		try {
+			Grade gradeToEdit = gradeRepository.findById(editGradeDTO.id())
+					.orElseThrow(() -> new EditValidationException("Série não encontrada"));
+			return gradeRepository.save(gradeChanges(gradeToEdit, editGradeDTO));
+		} catch (DataAccessException e) {
 			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
 		}
 	}
@@ -63,6 +65,12 @@ public class GradeService {
 			}
 		});
 
+	}
+
+	private Grade gradeChanges(Grade gradeToEdit, EditGradeDTO editGradeDTO) {
+		return new GradeEditBuilder().withGradeName(editGradeDTO.gradeName())
+				.withGradeMinimumDate(editGradeDTO.gradeMinimumDate())
+				.withGradeMaximumDate(editGradeDTO.gradeMaximumDate()).build(gradeToEdit);
 	}
 
 }
