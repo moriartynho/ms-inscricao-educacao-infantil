@@ -20,8 +20,6 @@ public class SchoolClass {
 	@NotNull
 	private Integer maximumVacanciesInTheClass;
 
-	private List<Student> classStudents;
-	
 	private List<Grade> classGrade;
 
 }

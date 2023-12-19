@@ -3,7 +3,6 @@ package com.moriartynho.msinscricaoeducacaoinfantil.model;
 import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,7 +20,6 @@ public class Grade {
 	private String id;
 
 	@NotBlank
-	@Indexed(unique = true)
 	private String gradeName;
 
 	@NotBlank
