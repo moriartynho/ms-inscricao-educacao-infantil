@@ -25,11 +25,16 @@ public class GradeEditBuilder {
 	}
 
 	public Grade build(Grade existingGrade) {
-		String finalGradeName = (!gradeName.isEmpty()) ? gradeName : existingGrade.getGradeName();
-		LocalDate finalGradeMinimumDate = (gradeMinimumDate != null) ? gradeMinimumDate
-				: existingGrade.getGradeMinimumDate();
-		LocalDate finalGradeMaximumDate = (gradeMaximumDate != null) ? gradeMaximumDate
-				: existingGrade.getGradeMaximumDate();
+		String finalGradeName = (!gradeName.isEmpty() || gradeName == existingGrade.getGradeName()) ? gradeName
+				: existingGrade.getGradeName();
+		
+		LocalDate finalGradeMinimumDate = (gradeMinimumDate != null
+				|| gradeMinimumDate == existingGrade.getGradeMinimumDate()) ? gradeMinimumDate
+						: existingGrade.getGradeMinimumDate();
+		
+		LocalDate finalGradeMaximumDate = (gradeMaximumDate != null
+				|| gradeMaximumDate == existingGrade.getGradeMaximumDate()) ? gradeMaximumDate
+						: existingGrade.getGradeMaximumDate();
 
 		existingGrade.setGradeName(finalGradeName);
 		existingGrade.setGradeMinimumDate(finalGradeMinimumDate);
