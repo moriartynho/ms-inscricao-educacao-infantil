@@ -52,7 +52,7 @@ public class SchoolService {
 
 		try {
 			School newSchool = new School(null, registerSchoolDTO.schoolName(), registerSchoolDTO.schoolAndress(),
-					registerSchoolDTO.physicalRooms(), new ArrayList<>());
+					registerSchoolDTO.physicalRooms(), new ArrayList<>(), new ArrayList<>());
 			schoolRepository.save(newSchool);
 		} catch (DataAccessException e) {
 			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);

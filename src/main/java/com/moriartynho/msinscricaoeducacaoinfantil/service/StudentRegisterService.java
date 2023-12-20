@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.moriartynho.msinscricaoeducacaoinfantil.dto.StudentRegisterDTO;
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.RegisterValidationException;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.Grade;
+import com.moriartynho.msinscricaoeducacaoinfantil.model.School;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.Student;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.constants.GradeConstants;
 import com.moriartynho.msinscricaoeducacaoinfantil.repository.GradeRepository;
@@ -39,7 +40,7 @@ public class StudentRegisterService {
 						studentRegisterDTO.studentsBirthDate(), studentRegisterDTO.studentsCpf(),
 						studentRegisterDTO.studentsGender(), studentRegisterDTO.studentsGuardianName(),
 						studentRegisterDTO.studentsGuardianCPF(), studentRegisterDTO.studentsAndress(),
-						studentRegisterDTO.participatesAuxilioBrasil(), studentGrade);
+						studentRegisterDTO.participatesAuxilioBrasil(), studentGrade, new School());
 
 				studentRepository.save(newStudent);
 			} catch (Exception e) {

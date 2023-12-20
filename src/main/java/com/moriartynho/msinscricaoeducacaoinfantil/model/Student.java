@@ -42,11 +42,13 @@ public class Student {
 	private String studentsGuardianCPF;
 
 	@NotBlank
-	private String studentsAndress;
+	private String studentsAddress;
 
 	@NotNull
 	private Boolean participatesAuxilioBrasil;
 
 	private Grade studentGrade;
+	
+	private School studentSchool;
 
 }

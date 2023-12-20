@@ -17,7 +17,7 @@ public class DistanceMatrixApiClient {
 	@Value("${GEO_API_KEY}")
 	private String geoApiKey;
 
-	public Integer compareAndress(String schoolAndress, String studentAndress) throws InternalErrorException {
+	public Integer compareAddress(String schoolAndress, String studentAndress) throws InternalErrorException {
 		try {
 			String apiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?" + "destinations="
 					+ schoolAndress + "&language=pt-BR" + "&mode=walking" + "&origins=" + studentAndress + "&key="

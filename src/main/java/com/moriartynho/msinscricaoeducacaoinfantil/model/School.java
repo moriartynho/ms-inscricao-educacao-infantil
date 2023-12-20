@@ -10,10 +10,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Document
 @AllArgsConstructor
+@NoArgsConstructor
 public class School {
 
 	@Id
@@ -23,10 +25,12 @@ public class School {
 	private String schoolName;
 
 	@NotBlank
-	private String schoolAndress;
+	private String schoolAddress;
 
 	@NotNull
 	private Integer physicalRoomsAvailable;
 
 	private List<SchoolClass> schoolClasses = new ArrayList<>();
+
+	private List<Student> schoolStudentRanking;
 }
