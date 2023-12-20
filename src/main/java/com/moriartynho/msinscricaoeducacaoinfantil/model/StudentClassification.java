@@ -17,7 +17,6 @@ public class StudentClassification {
 	private Integer positionInTheRanking;
 
 	@NotNull(message = "estado de atendimento não pode ser nulo")
-
 	private StudentServiceStatus studentServiceStatus;
 
 	private Student student;

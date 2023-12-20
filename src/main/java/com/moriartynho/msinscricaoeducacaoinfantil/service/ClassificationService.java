@@ -15,18 +15,15 @@ import com.moriartynho.msinscricaoeducacaoinfantil.repository.StudentRepository;
 @Service
 public class ClassificationService {
 
-	@Value("${GEO_API_KEY}")
-	private String geoApiKey;
-	
 	@Autowired
 	private SchoolRepository schoolRepository;
 
 	@Autowired
 	private StudentRepository studentRepository;
-	
+
 	public void generateRanking() {
 		List<Student> studentsToClassificate = this.studentRepository.findAll();
-		List<School> schools = this.schoolRepository.findAll();	
+		List<School> schools = this.schoolRepository.findAll();
 	}
 
 }
