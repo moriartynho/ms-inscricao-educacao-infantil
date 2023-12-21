@@ -2,6 +2,7 @@ package com.moriartynho.msinscricaoeducacaoinfantil.service.distance_matrix_api;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -19,8 +20,10 @@ public class DistanceMatrixApiClient {
 	private String geoApiKey;
 
 	public Integer compareAddress(String schoolAndress, String studentAndress) throws InternalErrorException, IOException, InterruptedException {
-		String apiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?" + "destinations=" + schoolAndress
-				+ "&language=pt-BR" + "&mode=walking" + "&origins=" + studentAndress + "&key=" + geoApiKey;
+		 String encodedSchoolAndress = URLEncoder.encode(schoolAndress, "UTF-8");
+	        String encodedStudentAndress = URLEncoder.encode(studentAndress, "UTF-8");
+		String apiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?" + "destinations=" + encodedSchoolAndress
+				+ "&language=pt-BR" + "&mode=walking" + "&origins=" + encodedStudentAndress + "&key=" + geoApiKey;
 
 		HttpClient httpClient = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiUrl)).build();

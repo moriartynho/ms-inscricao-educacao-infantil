@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.InternalErrorException;
@@ -22,50 +21,57 @@ import jakarta.validation.ValidationException;
 @Service
 public class ClassificationService {
 
-	@Autowired
 	private SchoolRepository schoolRepository;
-
-	@Autowired
 	private StudentRepository studentRepository;
-
-	@Autowired
 	private DistanceMatrixApiClient matrixApiClient;
+	private List<StudentDistanceToSchool> studentDistances = new ArrayList<>();
+
+	public ClassificationService(SchoolRepository schoolRepository, StudentRepository studentRepository,
+			DistanceMatrixApiClient matrixApiClient, List<StudentDistanceToSchool> studentDistances) {
+		this.schoolRepository = schoolRepository;
+		this.studentRepository = studentRepository;
+		this.matrixApiClient = matrixApiClient;
+		this.studentDistances = studentDistances;
+	}
 
 	public void generateRanking() {
-		
+
 		List<Student> studentsToClassify = studentRepository.findAll();
 		List<School> schools = schoolRepository.findAll();
-		List<StudentDistanceToSchool> studentDistances = validateDistanceAndVacancies(studentsToClassify, schools);
+		this.studentDistances = validateDistanceAndVacancies(studentsToClassify, schools);
 
 		studentDistances.forEach(studentDistance -> {
 			School school = studentDistance.getSchool();
 			Student student = studentDistance.getStudent();
-
-			school.getSchoolStudentRanking().add(student);
-			schoolRepository.save(school);
-			studentRepository.save(student);
+			saveStudentAndSchool(school, student);
 		});
 	}
 
-	private List<StudentDistanceToSchool> validateDistanceAndVacancies(List<Student> students, List<School> schools) {
-		List<StudentDistanceToSchool> studentDistances = new ArrayList<>();
+	private void saveStudentAndSchool(School school, Student student) {
+		school.getSchoolStudentRanking().add(student);
+		student.setStudentSchool(school);
+		schoolRepository.save(school);
+		studentRepository.save(student);
+	}
+
+	private void validateDistanceAndVacancies(List<Student> students, List<School> schools) {
 
 		students.forEach(student -> schools.forEach(school -> {
-				try {
-					validateAndAddDistance(student, school, studentDistances);
-				} catch (Exception e) {
-					throw new ValidationException(e.getMessage());
-				}
+			try {
+				validateAndAddDistance(student, school);
+			} catch (Exception e) {
+				throw new ValidationException(e.getMessage());
+			}
 		}));
 
 		studentDistances.sort(Comparator.comparingInt(StudentDistanceToSchool::getDistance)
 				.thenComparing(studentDistance -> studentDistance.getStudent().getParticipatesAuxilioBrasil()));
 
-		return studentDistances;
 	}
 
-	private void validateAndAddDistance(Student student, School school, List<StudentDistanceToSchool> studentDistances)
+	private void validateAndAddDistance(Student student, School school)
 			throws InternalErrorException, IOException, InterruptedException {
+
 		if (containsStudentGrade(school, student) && containsVacancies(school, student)) {
 			int distanceBetweenStudentAndSchool = matrixApiClient.compareAddress(school.getSchoolAddress(),
 					student.getStudentsAddress());
@@ -76,8 +82,8 @@ public class ClassificationService {
 	}
 
 	private boolean containsStudentGrade(School school, Student student) {
-		return school.getSchoolClasses().stream()
-				.anyMatch(schoolClass -> schoolClass.getClassGrade().equals(student.getStudentGrade()));
+		return school.getSchoolClasses().stream().anyMatch(schoolClass -> schoolClass.getClassGrade().stream()
+				.anyMatch(grade -> grade.equals(student.getStudentGrade())));
 	}
 
 	private boolean containsVacancies(School school, Student student) {
