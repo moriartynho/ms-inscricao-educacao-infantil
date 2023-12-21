@@ -1,5 +1,6 @@
 package com.moriartynho.msinscricaoeducacaoinfantil.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +16,8 @@ import com.moriartynho.msinscricaoeducacaoinfantil.model.StudentDistanceToSchool
 import com.moriartynho.msinscricaoeducacaoinfantil.repository.SchoolRepository;
 import com.moriartynho.msinscricaoeducacaoinfantil.repository.StudentRepository;
 import com.moriartynho.msinscricaoeducacaoinfantil.service.distance_matrix_api.DistanceMatrixApiClient;
+
+import jakarta.validation.ValidationException;
 
 @Service
 public class ClassificationService {
@@ -48,11 +51,11 @@ public class ClassificationService {
 		List<StudentDistanceToSchool> studentDistances = new ArrayList<>();
 
 		students.forEach(student -> schools.forEach(school -> {
-			try {
-				validateAndAddDistance(student, school, studentDistances);
-			} catch (InternalErrorException e) {
-				e.printStackTrace();
-			}
+				try {
+					validateAndAddDistance(student, school, studentDistances);
+				} catch (Exception e) {
+					throw new ValidationException(e.getMessage());
+				}
 		}));
 
 		studentDistances.sort(Comparator.comparingInt(StudentDistanceToSchool::getDistance)
@@ -62,7 +65,7 @@ public class ClassificationService {
 	}
 
 	private void validateAndAddDistance(Student student, School school, List<StudentDistanceToSchool> studentDistances)
-			throws InternalErrorException {
+			throws InternalErrorException, IOException, InterruptedException {
 		if (containsStudentGrade(school, student) && containsVacancies(school, student)) {
 			int distanceBetweenStudentAndSchool = matrixApiClient.compareAddress(school.getSchoolAddress(),
 					student.getStudentsAddress());

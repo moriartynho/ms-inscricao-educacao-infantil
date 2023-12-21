@@ -3,7 +3,6 @@ package com.moriartynho.msinscricaoeducacaoinfantil.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.moriartynho.msinscricaoeducacaoinfantil.builder.GradeEditBuilder;
@@ -28,32 +27,20 @@ public class GradeService {
 	private List<InsertGradeValidation> insertGradeValidations;
 
 	public List<Grade> findAllGrades() throws InternalErrorException {
-		try {
-			return this.gradeRepository.findAll();
-		} catch (Exception e) {
-			throw new InternalErrorException("Ocorreu um erro ao tentar acessar a base de dados: " + e.getMessage());
-		}
+		return this.gradeRepository.findAll();
 	}
 
 	public void insertGrade(InsertGradeDTO insertGradeDTO) throws RegisterValidationException, InternalErrorException {
-		try {
-			validateDateGrade(insertGradeDTO);
-			Grade newGrade = new Grade(null, insertGradeDTO.gradeName(), insertGradeDTO.gradeMinimumDate(),
-					insertGradeDTO.gradeMaximumDate());
-			this.gradeRepository.save(newGrade);
-		} catch (RegisterValidationException e) {
-			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
-		}
+		validateDateGrade(insertGradeDTO);
+		Grade newGrade = new Grade(null, insertGradeDTO.gradeName(), insertGradeDTO.gradeMinimumDate(),
+				insertGradeDTO.gradeMaximumDate());
+		this.gradeRepository.save(newGrade);
 	}
 
 	public Grade editGradeById(EditGradeDTO editGradeDTO) throws InternalErrorException, EditValidationException {
-		try {
 			Grade gradeToEdit = gradeRepository.findById(editGradeDTO.id())
 					.orElseThrow(() -> new EditValidationException("Série não encontrada"));
 			return gradeRepository.save(gradeChanges(gradeToEdit, editGradeDTO));
-		} catch (DataAccessException e) {
-			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
-		}
 	}
 
 	private void validateDateGrade(InsertGradeDTO insertGradeDTO) throws RegisterValidationException {

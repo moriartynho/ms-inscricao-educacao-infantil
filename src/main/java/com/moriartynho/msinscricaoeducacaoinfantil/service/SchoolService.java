@@ -3,7 +3,6 @@ package com.moriartynho.msinscricaoeducacaoinfantil.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.moriartynho.msinscricaoeducacaoinfantil.dto.InsertSchoolClassDTO;
@@ -37,11 +36,7 @@ public class SchoolService {
 	}
 
 	public List<School> findAllSchools() throws InternalErrorException {
-		try {
-			return schoolRepository.findAll();
-		} catch (DataAccessException e) {
-			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
-		}
+		return schoolRepository.findAll();
 	}
 
 	public void registerSchool(RegisterSchoolDTO registerSchoolDTO)
@@ -50,33 +45,25 @@ public class SchoolService {
 			throw new RegisterValidationException("Escola com mesmo nome já registrada");
 		}
 
-		try {
-			School newSchool = new School(null, registerSchoolDTO.schoolName(), registerSchoolDTO.schoolAndress(),
-					registerSchoolDTO.physicalRooms(), new ArrayList<>(), new ArrayList<>());
-			schoolRepository.save(newSchool);
-		} catch (DataAccessException e) {
-			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
-		}
+		School newSchool = new School(null, registerSchoolDTO.schoolName(), registerSchoolDTO.schoolAndress(),
+				registerSchoolDTO.physicalRooms(), new ArrayList<>(), new ArrayList<>());
+		schoolRepository.save(newSchool);
 	}
 
 	public void insertSchoolClassBySchoolName(InsertSchoolClassDTO insertClassDTO)
 			throws RegisterValidationException, InternalErrorException {
-		try {
-			School schoolToAddClass = findSchoolByName(insertClassDTO.schoolName());
-			List<Grade> gradeOfTheNewClass = findGradeByName(insertClassDTO.classGrade());
+		School schoolToAddClass = findSchoolByName(insertClassDTO.schoolName());
+		List<Grade> gradeOfTheNewClass = findGradeByName(insertClassDTO.classGrade());
 
-			validateInsertClass(schoolToAddClass, gradeOfTheNewClass);
+		validateInsertClass(schoolToAddClass, gradeOfTheNewClass);
 
-			SchoolClass newSchoolClass = new SchoolClass(null, insertClassDTO.maximumVacanciesInTheClass(),
-					gradeOfTheNewClass);
+		SchoolClass newSchoolClass = new SchoolClass(null, insertClassDTO.maximumVacanciesInTheClass(),
+				gradeOfTheNewClass);
 
-			schoolClassRepository.save(newSchoolClass);
-			schoolToAddClass.getSchoolClasses().add(newSchoolClass);
-			schoolRepository.save(schoolToAddClass);
+		schoolClassRepository.save(newSchoolClass);
+		schoolToAddClass.getSchoolClasses().add(newSchoolClass);
+		schoolRepository.save(schoolToAddClass);
 
-		} catch (Exception e) {
-			throw new RegisterValidationException("Erro ao inserir turma na escola: " + e.getMessage());
-		}
 	}
 
 	private School findSchoolByName(String schoolName) throws RegisterValidationException {
@@ -100,10 +87,6 @@ public class SchoolService {
 	}
 
 	private boolean validateSchoolNameAlreadyExists(String schoolName) throws InternalErrorException {
-		try {
-			return schoolRepository.existsBySchoolName(schoolName);
-		} catch (DataAccessException e) {
-			throw new InternalErrorException("Erro ao acessar a base de dados: " + e.getMessage(), e);
-		}
+		return schoolRepository.existsBySchoolName(schoolName);
 	}
 }
