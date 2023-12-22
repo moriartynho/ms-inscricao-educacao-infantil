@@ -1,5 +1,6 @@
 package com.moriartynho.msinscricaoeducacaoinfantil.infra.handler;
 
+import java.io.IOException;
 import java.time.Instant;
 
 import org.springframework.dao.DataAccessException;
@@ -19,13 +20,6 @@ import jakarta.validation.ValidationException;
 @ControllerAdvice
 public class ResolveExceptionHandler {
 
-	@ExceptionHandler(InternalErrorException.class)
-	public ResponseEntity<ResponseMessageError> classificationExceptionHandler(InternalErrorException exception,
-			HttpServletRequest request) {
-		return popularResponseMessageError(exception, HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(),
-				request);
-	}
-
 	@ExceptionHandler(ClassificationException.class)
 	public ResponseEntity<ResponseMessageError> classificationExceptionHandler(ClassificationException exception,
 			HttpServletRequest request) {
@@ -33,25 +27,43 @@ public class ResolveExceptionHandler {
 	}
 
 	@ExceptionHandler(EditValidationException.class)
-	public ResponseEntity<ResponseMessageError> classificationExceptionHandler(EditValidationException exception,
+	public ResponseEntity<ResponseMessageError> editValidationExceptionHandler(EditValidationException exception,
 			HttpServletRequest request) {
 		return popularResponseMessageError(exception, HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
 	}
 
 	@ExceptionHandler(ValidationException.class)
-	public ResponseEntity<ResponseMessageError> classificationExceptionHandler(ValidationException exception,
+	public ResponseEntity<ResponseMessageError> validationExceptionHandler(ValidationException exception,
 			HttpServletRequest request) {
 		return popularResponseMessageError(exception, HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
 	}
 
 	@ExceptionHandler(RegisterValidationException.class)
-	public ResponseEntity<ResponseMessageError> classificationExceptionHandler(RegisterValidationException exception,
+	public ResponseEntity<ResponseMessageError> regsiterValidationExceptionHandler(RegisterValidationException exception,
 			HttpServletRequest request) {
 		return popularResponseMessageError(exception, HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
 	}
 
 	@ExceptionHandler(DataAccessException.class)
-	public ResponseEntity<ResponseMessageError> classificationExceptionHandler(DataAccessException exception,
+	public ResponseEntity<ResponseMessageError> dataAcessExceptionHandler(DataAccessException exception,
+			HttpServletRequest request) {
+		return popularResponseMessageError(exception, HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
+	}
+
+	@ExceptionHandler(InternalErrorException.class)
+	public ResponseEntity<ResponseMessageError> internalErrornExceptionHandler(InternalErrorException exception,
+			HttpServletRequest request) {
+		return popularResponseMessageError(exception, HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
+	}
+	
+	@ExceptionHandler(IOException.class)
+	public ResponseEntity<ResponseMessageError> ioExceptionExceptionHandler(IOException exception,
+			HttpServletRequest request) {
+		return popularResponseMessageError(exception, HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
+	}
+	
+	@ExceptionHandler(InterruptedException.class)
+	public ResponseEntity<ResponseMessageError> interruptedExceptionHandler(InterruptedException exception,
 			HttpServletRequest request) {
 		return popularResponseMessageError(exception, HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
 	}

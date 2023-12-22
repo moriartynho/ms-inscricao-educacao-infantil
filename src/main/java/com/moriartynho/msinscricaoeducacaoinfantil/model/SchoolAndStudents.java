@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @EqualsAndHashCode
-public class StudentDistanceToSchool {
+public class SchoolAndStudents {
 	
 	private School school;
 	private Student student;
-	private Integer distance;
+
 }

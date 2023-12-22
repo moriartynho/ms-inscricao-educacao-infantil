@@ -40,7 +40,7 @@ public class StudentRegisterService {
 						studentRegisterDTO.studentsBirthDate(), studentRegisterDTO.studentsCpf(),
 						studentRegisterDTO.studentsGender(), studentRegisterDTO.studentsGuardianName(),
 						studentRegisterDTO.studentsGuardianCPF(), studentRegisterDTO.studentsAndress(),
-						studentRegisterDTO.participatesAuxilioBrasil(), studentGrade, new School());
+						studentRegisterDTO.participatesAuxilioBrasil(), studentGrade);
 
 				studentRepository.save(newStudent);
 			} catch (Exception e) {
