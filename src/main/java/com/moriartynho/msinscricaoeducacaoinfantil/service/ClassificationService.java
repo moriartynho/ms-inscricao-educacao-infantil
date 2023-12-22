@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.moriartynho.msinscricaoeducacaoinfantil.exception.InternalErrorException;
 import com.moriartynho.msinscricaoeducacaoinfantil.model.School;
@@ -30,52 +33,60 @@ public class ClassificationService {
 	@Autowired
 	private DistanceMatrixApiClient matrixApiClient;
 
+	@Transactional
 	public void generateRanking() throws InternalErrorException, IOException, InterruptedException {
 		List<Student> studentsToClassify = studentRepository.findAll();
 		List<School> schools = schoolRepository.findAll();
 		List<SchoolAndStudents> schoolAndStudents = validateDistanceAndVacancies(studentsToClassify, schools);
 
-		for (SchoolAndStudents schoolAndStudent : schoolAndStudents) {
-			School school = schoolAndStudent.getSchool();
-			Student student = schoolAndStudent.getStudent();
+		schoolAndStudents.forEach(schoolAndStudent -> updateSchoolAndStudentRanking(schoolAndStudent));
+	}
 
-			if (!school.getSchoolStudentRanking().contains(student)) {
-				school.getSchoolStudentRanking().add(student);
-				schoolRepository.save(school);
-				studentRepository.save(student);
-			}
+	private void updateSchoolAndStudentRanking(SchoolAndStudents schoolAndStudent) {
+		School school = schoolAndStudent.getSchool();
+		Student student = schoolAndStudent.getStudent();
+
+		if (!school.getSchoolStudentRanking().contains(student)) {
+			school.getSchoolStudentRanking().add(student);
+			schoolRepository.save(school);
+			studentRepository.save(student);
 		}
 	}
 
 	private List<SchoolAndStudents> validateDistanceAndVacancies(List<Student> students, List<School> schools)
 			throws InternalErrorException, IOException, InterruptedException {
-		List<StudentDistanceToSchool> studentDistancesToSchool = new ArrayList<>();
 		List<SchoolAndStudents> schoolAndStudentsToAdd = new ArrayList<>();
 
 		for (Student student : students) {
-			for (School school : schools) {
-				int distanceBetweenStudentAndSchool = matrixApiClient.compareAddress(school.getSchoolAddress(),
-						student.getStudentsAddress());
-				StudentDistanceToSchool studentDistanceToSchool = new StudentDistanceToSchool(school, student,
-						distanceBetweenStudentAndSchool);
+			List<StudentDistanceToSchool> studentDistancesToSchool = calculateDistancesToSchools(student, schools);
+			Optional<StudentDistanceToSchool> selectedStudentDistance = selectNearestSchool(studentDistancesToSchool);
 
-				if (containsStudentGradeAndContainsVacancies(school, student)
-						&& verifyIfStudentAreInTheSchool(student, school)) {
-
-					studentDistancesToSchool.add(studentDistanceToSchool);
-				}
-				studentDistancesToSchool.sort(Comparator.comparingInt(StudentDistanceToSchool::getDistance));
-				School selectedSchool = studentDistancesToSchool.get(0).getSchool();
-				Student selectedStudent = studentDistancesToSchool.get(0).getStudent();
+			selectedStudentDistance.ifPresent(distanceToSchool -> {
+				School selectedSchool = distanceToSchool.getSchool();
+				Student selectedStudent = distanceToSchool.getStudent();
 				if (!schoolAndStudentsToAdd.contains(selectedStudent)) {
 					schoolAndStudentsToAdd.add(new SchoolAndStudents(selectedSchool, selectedStudent));
 				}
-
-			}
-			studentDistancesToSchool.clear();
+			});
 		}
-		return schoolAndStudentsToAdd.stream().distinct().toList();
 
+		return schoolAndStudentsToAdd.stream().distinct().toList();
+	}
+
+	private List<StudentDistanceToSchool> calculateDistancesToSchools(Student student, List<School> schools)
+			throws InternalErrorException, IOException, InterruptedException {
+		return schools.stream()
+				.map(school -> new StudentDistanceToSchool(school, student,
+						matrixApiClient.compareAddress(school.getSchoolAddress(), student
+								.getStudentsAddress())))
+				.filter(distanceToSchool -> containsStudentGradeAndContainsVacancies(distanceToSchool.getSchool(),
+						distanceToSchool.getStudent())
+						&& verifyIfStudentAreInTheSchool(distanceToSchool.getStudent(), distanceToSchool.getSchool()))
+				.sorted(Comparator.comparingInt(StudentDistanceToSchool::getDistance)).collect(Collectors.toList());
+	}
+
+	private Optional<StudentDistanceToSchool> selectNearestSchool(List<StudentDistanceToSchool> distancesToSchool) {
+		return distancesToSchool.stream().findFirst();
 	}
 
 	private boolean verifyIfStudentAreInTheSchool(Student studentToCompare, School school) {
